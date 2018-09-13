@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+<meta name="apple-touch-fullscreen" content="YES" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<style>
+	button{
+		padding:10px;
+		color: red;
+	};
+</style>
+</head>
+<body>
+	<button id="getSign">签名获取</button>
+	<button id="scanQRCode1">扫描</button>
+</body>
+<script type="text/javascript" src="./zepto.js"></script>
+<script type="text/javascript"
+	src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+<script type="text/javascript">
+	$(function() {
+        //$('#getSign').on('click', function(event) {
+        //	event.preventDefault();
+        	$.post("/getSignature", {}, function(config) {
+			if (config != undefined && config != null) {
+
+				wx.config({
+					debug : true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					appId : 'wxd76f07f57fe513b8', // 必填，appID公众号的唯一标识
+					timestamp : config.timestamp, // 必填，生成签名的时间戳
+					nonceStr : config.nonceStr, // 必填，生成签名的随机串
+					signature : config.signature,// 必填，签名，见附录1
+					jsApiList : [ 
+						'scanQRCode',
+						'onMenuShareTimeline',
+						'onMenuShareQQ',
+						'onMenuShareAppMessage',
+						'onMenuShareWeibo'
+					]
+				// 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+				});
+				alert('配置成功！');
+			}
+		  });
+        //});
+
+		
+
+		wx.ready(function() {
+			// 9.1.2 扫描二维码并返回结果
+			document.querySelector('#scanQRCode1').onclick = function() {
+				wx.scanQRCode({
+					needResult : 1,
+					scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+					desc : '微信调扫描',
+					success : function(res) {
+						//扫描成功的返回值
+						alert(JSON.stringify(res));
+					}
+				});
+			};
+			//分享朋友圈
+			wx.onMenuShareTimeline({
+			    title: 'text不要点不要点不要点', // 分享标题
+			    link: 'http://music.163.com/#/song?id=36897082', // 分享链接
+			    imgUrl: 'http://p3.music.126.net/q0A66EfJk6gUO_yWZQbK8A==/18238698881650211.jpg?param=130y130', // 分享图标
+			    type: 'music', // 分享类型,music、video或link，不填默认为link
+				dataUrl: 'http://m10.music.126.net/20160714202104/970479718363fd6f73297a865231298f/ymusic/d397/0682/09c9/7267d5c9ea3bab03301e7d08078f9706.mp3',
+			    success: function () { 
+			        // 用户确认分享后执行的回调函数
+			        alert('发送成功!');
+			    },
+			    cancel: function () { 
+			        // 用户取消分享后执行的回调函数
+			        alert('取消发送!');
+			    }
+			});
+			//分享给朋友
+			wx.onMenuShareAppMessage({
+				title: 'test1不要点不要点不要点', // 分享标题
+				desc: '不要点不要点不要点', // 分享描述
+				link: 'http://music.163.com/#/song?id=36897082', // 分享链接
+				imgUrl: 'http://p3.music.126.net/q0A66EfJk6gUO_yWZQbK8A==/18238698881650211.jpg?param=130y130', // 分享图标
+				type: 'music', // 分享类型,music、video或link，不填默认为link
+				dataUrl: 'http://m10.music.126.net/20160714202104/970479718363fd6f73297a865231298f/ymusic/d397/0682/09c9/7267d5c9ea3bab03301e7d08078f9706.mp3', // 如果type是music或video，则要提供数据链接，默认为空
+				success: function () { 
+				    // 用户确认分享后执行的回调函数
+			        alert('发送成功!');
+				},
+				cancel: function () { 
+				    // 用户取消分享后执行的回调函数
+			        alert('取消发送!');
+				}
+			})
+		});
+	});
+</script>
+</html>
+
